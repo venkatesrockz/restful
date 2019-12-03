@@ -3,9 +3,12 @@ package com.example.webservice.restful.users;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpStatusCodeException;
 
 @RestController
 public class UserController {
@@ -20,9 +23,15 @@ public class UserController {
 	}
 	
 	@GetMapping(path = "/Users/{id}")
-	public User getoneuser(@PathVariable Integer id)
+	public ResponseEntity<User> getoneuser(@PathVariable Integer id)
 	{
-		return service.findone(id);
+		
+		User ret = service.findone(id);
+		if(ret == null)
+		{
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<User>(ret, HttpStatus.OK);
 	}
 
 }
